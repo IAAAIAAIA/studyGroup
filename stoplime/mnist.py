@@ -1,3 +1,4 @@
+import sys
 import numpy as np
 import matplotlib.pyplot as plt
 plt.rcParams['figure.figsize'] = (7,7) # Make the figures a bit bigger
@@ -9,6 +10,9 @@ from keras.utils import np_utils
 from keras.layers.normalization import BatchNormalization
 from keras.layers.convolutional import Convolution2D
 from keras.layers.pooling import MaxPooling2D
+
+sys.path.append()
+from snapshot import SnapshotCallbackBuilder
 
 nb_classes = 10
 
@@ -35,20 +39,20 @@ model.add(Convolution2D(64, 3, 3, border_mode='same', input_shape=(28, 28, 1)))
 model.add(BatchNormalization())
 model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(3, 3)))
-model.add(Dropout(0.2))
+model.add(Dropout(0.4))
 
 model.add(Convolution2D(128, 3, 3, border_mode='same'))
 model.add(BatchNormalization())
 model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(3, 3)))
-model.add(Dropout(0.2))
+model.add(Dropout(0.6))
 
 model.add(Flatten())
 
 model.add(Dense(512))
 model.add(BatchNormalization())
 model.add(Activation('tanh'))
-model.add(Dropout(0.45))
+model.add(Dropout(0.4))
 
 model.add(Dense(10))
 model.add(BatchNormalization())
