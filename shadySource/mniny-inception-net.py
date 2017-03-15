@@ -174,7 +174,7 @@ def evaluate_ensemble(Best=True):
     for mfile in model_dirs:
         print(os.path.join('weights',mfile))
         model.load_weights(os.path.join('weights',mfile))
-        yPreds = model.predict(X_test, batch_size=128, verbose=1)
+        yPreds = model.predict(X_test, batch_size=128, verbose=0)
         preds.append(yPreds)
 
     weighted_predictions = np.zeros((X_test.shape[0], 10), dtype='float64')
@@ -225,16 +225,18 @@ def evaluate(eval_all=False):
         model.compile(loss='categorical_crossentropy', optimizer='adam',
                     metrics=['categorical_accuracy'])
         score = model.evaluate(X_test, Y_test,
-                            verbose=1)
+                            verbose=0)
         print('--------------------------------------')
         print('model'+str(run)+':')
         print('Test loss:', score[0])
         print('error:', str((1.-score[1])*100)+'%')
 
 #evaluate_ensemble(True)
-evaluate(eval_all=False)
+#evaluate(eval_all=False)
 #test_model()
 
+
+# To train:
 #run = 5
 #while True:
 #    train(run)
