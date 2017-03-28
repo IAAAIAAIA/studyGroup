@@ -1,14 +1,14 @@
 
 # coding: utf-8
 
-# In[10]:
+# In[2]:
 
 import numpy as np
 import matplotlib.pyplot as plt
 plt.rcParams['figure.figsize'] = (7,7) # Make the figures a bit bigger
 
 from keras.datasets import mnist
-from keras.models import Sequential
+from keras.models import Sequential, load_model
 from keras.layers.convolutional import Convolution2D
 from keras.layers.core import Dense, Dropout, Activation, Flatten
 from keras.utils import np_utils
@@ -86,7 +86,7 @@ model.fit(X_train, Y_train,
           validation_data=(X_test, Y_test))
 
 
-# In[ ]:
+# In[1]:
 
 model.save('./models/model1.h5')
 
@@ -110,7 +110,7 @@ print('Test accuracy:', score[1])
 # The predict_classes function outputs the highest probability class
 # according to the trained classifier for each input example.
 predicted_classes1 = model.predict_classes(X_test)
-model2 = keras.models.load_model('./models/model1.h5')
+model2 = load_model('./models/model1.h5')
 predicted_classes2 = model2.predict_classes(X_test)
 
 predicted_classes = (predicted_classes1 + predicted_classes2) / 2
