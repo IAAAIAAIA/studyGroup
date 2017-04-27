@@ -5,52 +5,56 @@ from keras.datasets import mnist
 from keras.models import Sequential
 from keras.layers.core import Dense, Dropout, Activation
 from keras.utils import np_utils
-from keras.layers import Input, merge
-from keras.layers.core import Dense, Dropout, Activation, Flatten, Lambda, Reshape, Merge, MaxoutDense
+from keras.layers import Input
+from keras.layers.merge import Average, Concatenate
+from keras.layers.core import Dense, Dropout, Activation, Flatten, Lambda, Reshape
 from keras.layers.convolutional import Convolution2D, MaxPooling2D, Convolution3D, AveragePooling2D
 from keras.layers.normalization import BatchNormalization
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Model, load_model
 from keras.layers.advanced_activations import PReLU
-from keras.regularizers import l2, activity_l2
 from keras import backend as K #enable tensorflow functions
 from keras.layers.pooling import GlobalAveragePooling2D
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from snapshot import SnapshotCallbackBuilder
 import keras.metrics as metrics
+import PIL
+import time
+import progressbar
 
 PATH = os.path.dirname(os.path.abspath(__file__))
 
-def load_image(filename):
-    for dirname in os.listdir(PLANET_KAGGLE_ROOT):
-        path = os.path.abspath(os.path.join(PLANET_KAGGLE_ROOT, dirname, filename))
-        if os.path.exists(path):
-            print('Found image {}'.format(path))
-            return io.imread(path)
-            
-    print('Load failed: could not find image {}'.format(path))
-    
+def load_images(folder):
+    list = os.listdir(folder)
+    bar = progressbar.ProgressBar(widgets=[progressbar.Percentage(),progressbar.Bar(),], max_value=len(list)).start()
+    images = []
+    for filename in os.listdir(folder):
+        img = np.array(PIL.Image.open(os.path.join(folder,filename)))
+        if img is not None:
+            images.append(img)
+            bar += 1
+    bar.finish()
+    return images
+
 def sample_to_fname(sample_df, row_idx, suffix='tif'):
 
     fname = sample_df.get_value(sample_df.index[row_idx], 'image_name')
     return '{}.{}'.format(fname, suffix)
 
 def train(run=0):
-
-    X_train = load_image(train_1.jpg)
-    y_train = sample_to_fname(,)
-    '''
-    (X_train, y_train), (X_test, y_test) = mnist.load_data()
-    X_train = X_train.reshape(60000, 784)
-    X_test = X_test.reshape(10000, 784)
-    X_train = X_train.astype('float32')
-    X_test = X_test.astype('float32')
-    X_train /= 255
-    X_test /= 255
-    '''
+    print('Loading Train Data: ')
+    X_train = np.array(load_images('/home/sexy/CS231n/mat/Kaggle/train-jpg'))
+    print('Loading Test Data: ')
+    X_test = np.array(load_images('/home/sexy/CS231n/mat/Kaggle/test-jpg'))
+    X_train_shape = X_train.shape
+    X_test_shape = X_test.shape
+    print('Number of train images: ', X_train_shape)
+    print('Number of test images: ',  X_test_shape)
+    print('First entry of training array: ',  X_train[0].shape)
+train()
     #datagen = ImageDataGenerator(rotation_range=45,width_shift_range=0.2, height_shift_range=0.2)
     #datagen.fit(X_train)
-
+'''
     Y_train = np_utils.to_categorical(y_train, 10)
     Y_test = np_utils.to_categorical(y_test, 10)
     model = create_model()
@@ -89,10 +93,10 @@ def dropconnect_lambda():
     pass
 
 def inception_net(_input):
-    x = Reshape((28, 28, 1))(_input)
+    #x = Reshape((28, 28, 1))(_input)
     #x = Convolution2D(32, 3, 3, subsample=(1, 1))(x)
     #x = Activation('relu')(x)
-    x = Convolution2D(16, 3, 3,subsample=(2, 2))(x)
+    x = Convolution2D(16, 3, 3,subsample=(2, 2))(_input)
     x = BatchNormalization()(x)
     x = Activation('relu')(x)
     x = Convolution2D(48, 3, 3,subsample=(1, 1))(x)
@@ -115,13 +119,13 @@ def inception_net(_input):
     x = Flatten()(x)
     x = Dense(10)(x)
     soft3 = Activation('softmax')(x)
-    out = Merge(mode='ave', concat_axis=1)([soft1, soft2, soft3])
+    out = Average([soft1, soft2, soft3])
     return out
 
 def mniny_inception_module(x, scale=1, predict=False):
-    '''
-    x is input layer, scale is factor to scale kernel sizes by
-    '''
+
+    ###x is input layer, scale is factor to scale kernel sizes by
+
     x11 = Convolution2D(int(16*scale), 1, 1, border_mode='valid')(x)
     x11 = BatchNormalization()(x11)
     x11 = Activation('relu')(x11)
@@ -145,7 +149,7 @@ def mniny_inception_module(x, scale=1, predict=False):
     x33p = BatchNormalization()(x33p)
     x33p = Activation('relu')(x33p)
 
-    out = merge([x11, x33, x55, x33p], mode='concat', concat_axis=3)
+    out = Concatenate(axis=3)([x11, x33, x55, x33p])
 
     if predict:
         predict = AveragePooling2D((5, 5), strides=(1, 1))(x)
@@ -169,9 +173,9 @@ def test_model():
     print("MODEL COMPILES SUCCESSFULLY")
 
 def evaluate_ensemble(Best=True):
-    '''
-    loads and evaluates an ensemle from the models in the model folder.
-    '''
+    
+    ###loads and evaluates an ensemle from the models in the model folder.
+    
     (X_train, y_train), (X_test, y_test) = mnist.load_data()
     X_test = X_test.reshape(10000, 784)
     X_test = X_test.astype('float32')
@@ -218,10 +222,10 @@ def evaluate_ensemble(Best=True):
     print('--------------------------------------')
 
 def evaluate(eval_all=False):
-    '''
-    evaluate models in the weights directory,
-    defaults to only models with 'best'
-    '''
+
+    ###evaluate models in the weights directory,
+    ###defaults to only models with 'best'
+
     (X_train, y_train), (X_test, y_test) = mnist.load_data()
     X_test = X_test.reshape(10000, 784)
     X_test = X_test.astype('float32')
@@ -269,3 +273,4 @@ def evaluate(eval_all=False):
 #60000/60000 [==============================] - 33s - loss: 0.0053 - val_loss: 0.0229
 #10000/10000 [==============================] - 8s
 #Test score: 0.0229417834882
+'''
