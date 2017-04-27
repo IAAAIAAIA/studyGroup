@@ -19,6 +19,7 @@ from keras.callbacks import EarlyStopping, ModelCheckpoint
 from snapshot import SnapshotCallbackBuilder
 import keras.metrics as metrics
 import PIL
+import csv
 import time
 import progressbar
 
@@ -36,27 +37,37 @@ def load_images(folder):
     bar.finish()
     return images
 
-def sample_to_fname(sample_df, row_idx, suffix='tif'):
-
-    fname = sample_df.get_value(sample_df.index[row_idx], 'image_name')
-    return '{}.{}'.format(fname, suffix)
+def csv_reader(file_obj):
+    with open(file_obj) as csvfile:
+        readCSV = csv.reader(csvfile, delimiter=',')
+    return readCSV
 
 def train(run=0):
+    csv_path = '/home/mat/CS231n/mat/Kaggle/train.csv' #'/home/sexy/CS231n/mat/Kaggle/train.csv'
+    '''
+    train_data_path = '/home/sexy/CS231n/mat/Kaggle/train-jpg'
+    test_data_path = '/home/sexy/CS231n/mat/Kaggle/test-jpg'
+    
     print('Loading Train Data: ')
-    X_train = np.array(load_images('/home/sexy/CS231n/mat/Kaggle/train-jpg'))
+    X_train = np.array(load_images(train_data_path))
     print('Loading Test Data: ')
-    X_test = np.array(load_images('/home/sexy/CS231n/mat/Kaggle/test-jpg'))
+    X_test = np.array(load_images(test_data_path))
     X_train_shape = X_train.shape
     X_test_shape = X_test.shape
+
     print('Number of train images: ', X_train_shape)
     print('Number of test images: ',  X_test_shape)
     print('First entry of training array: ',  X_train[0].shape)
+    '''
+    Y_train = csv_reader(csv_path)
+    print (Y_train)
 train()
+'''
     #datagen = ImageDataGenerator(rotation_range=45,width_shift_range=0.2, height_shift_range=0.2)
     #datagen.fit(X_train)
-'''
+train.csv
     Y_train = np_utils.to_categorical(y_train, 10)
-    Y_test = np_utils.to_categorical(y_test, 10)
+    17
     model = create_model()
     model.compile(loss='categorical_crossentropy', optimizer='adam')
 
