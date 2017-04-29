@@ -18,6 +18,7 @@ from keras.layers.pooling import GlobalAveragePooling2D
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from snapshot import SnapshotCallbackBuilder
 import keras.metrics as metrics
+import pandas as pd
 import PIL
 import csv
 import time
@@ -25,9 +26,33 @@ import progressbar
 
 PATH = os.path.dirname(os.path.abspath(__file__))
 
+def load_data():
+    # Chose path to the .csv file containing the labels: 
+    csv_path = '/home/sexy/CS231n/mat/Kaggle/train.csv'
+    # Chose path to the folder containing the training data in .jpg format:
+    train_data_path = '/home/sexy/CS231n/mat/Kaggle/train-jpg'
+    # Chose path to the folder containing the test data in .jpg format:
+    test_data_path = '/home/sexy/CS231n/mat/Kaggle/test-jpg'
+    
+    print('Loading Train Data: ')
+    X_train = np.array(load_images(train_data_path))
+
+    print('Loading Test Data: ')
+    X_test = np.array(load_images(test_data_path))
+
+    X_train_shape = X_train.shape
+    X_test_shape = X_test.shape
+
+    image_and_tags = csv_reader(csv_path)
+    labels = label_lister(image_and_tags)
+    Y_train = list_to_vec(image_and_tags['tags'], labels)
+
+    return X_train, X_test, X_train_shape, X_test_shape, image_and_tags, labels, Y_train
+
 def load_images(folder):
     list = os.listdir(folder)
-    bar = progressbar.ProgressBar(widgets=[progressbar.Percentage(),progressbar.Bar(),], max_value=len(list)).start()
+    bar = progressbar.ProgressBar(widgets=[progressbar.Percentage(), progressbar.Bar(), ],
+                                  max_value=len(list)).start()
     images = []
     for filename in os.listdir(folder):
         img = np.array(PIL.Image.open(os.path.join(folder,filename)))
@@ -37,37 +62,46 @@ def load_images(folder):
     bar.finish()
     return images
 
-def csv_reader(file_obj):
-    with open(file_obj) as csvfile:
-        readCSV = csv.reader(csvfile, delimiter=',')
-    return readCSV
+def csv_reader(file_labels):
+    with open(file_labels) as f:
+        CSVread = pd.read_csv(f)
+    return CSVread
+
+def label_lister(labels_df):
+    label_list = []
+    for tag_str in labels_df.tags.values:
+        labels = tag_str.split(' ')
+        for label in labels:
+            if label not in label_list:
+                label_list.append(label)
+    return label_list
+
+def list_to_vec(list_img_labels, all_labels):
+    number_of_labels = len(all_labels)
+    number_of_pics = len(list_img_labels)
+    vec = np.empty([number_of_pics, number_of_labels], dtype=int)
+
+    print('Translating lables into vectors:')
+    bar = progressbar.ProgressBar(widgets=[progressbar.Percentage(), progressbar.Bar(), ],
+                                  max_value=(number_of_pics)).start()
+    for i in range(number_of_pics-1):
+        bar += 1
+        for j in range(number_of_labels-1):
+            if all_labels[j] in list_img_labels[i]:
+                vec[i][j] = 1
+            else:
+                vec[i][j] = 0
+    bar.finish()
+    return vec
+
+# def vec_to_lis():
 
 def train(run=0):
-    csv_path = '/home/mat/CS231n/mat/Kaggle/train.csv' #'/home/sexy/CS231n/mat/Kaggle/train.csv'
-    '''
-    train_data_path = '/home/sexy/CS231n/mat/Kaggle/train-jpg'
-    test_data_path = '/home/sexy/CS231n/mat/Kaggle/test-jpg'
-    
-    print('Loading Train Data: ')
-    X_train = np.array(load_images(train_data_path))
-    print('Loading Test Data: ')
-    X_test = np.array(load_images(test_data_path))
-    X_train_shape = X_train.shape
-    X_test_shape = X_test.shape
-
+    X_train, X_test, X_train_shape, X_test_shape, image_and_tags, labels, Y_train = load_data()
     print('Number of train images: ', X_train_shape)
     print('Number of test images: ',  X_test_shape)
-    print('First entry of training array: ',  X_train[0].shape)
-    '''
-    Y_train = csv_reader(csv_path)
-    print (Y_train)
-train()
-'''
     #datagen = ImageDataGenerator(rotation_range=45,width_shift_range=0.2, height_shift_range=0.2)
     #datagen.fit(X_train)
-train.csv
-    Y_train = np_utils.to_categorical(y_train, 10)
-    17
     model = create_model()
     model.compile(loss='categorical_crossentropy', optimizer='adam')
 
@@ -94,7 +128,7 @@ train.csv
     return score
 
 def create_model():
-    _input = Input((784,))
+    _input = Input((65536,))
     incep1 = inception_net(_input)
     out = incep1
     model = Model(input=_input, output=[out])
