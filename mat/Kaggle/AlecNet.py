@@ -8,7 +8,7 @@ from keras.utils import np_utils
 from keras.layers import Input
 from keras.layers.merge import Average, Concatenate
 from keras.layers.core import Dense, Dropout, Activation, Flatten, Lambda, Reshape
-from keras.layers.convolutional import Convolution2D, MaxPooling2D, Convolution3D, AveragePooling2D
+from keras.layers.convolutional import Conv2D, MaxPooling2D, Convolution3D, AveragePooling2D
 from keras.layers.normalization import BatchNormalization
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Model, load_model
@@ -26,34 +26,36 @@ import progressbar as pb
 
 PATH = os.path.dirname(os.path.abspath(__file__))
 
-def load_X_data():
+def load_X_train_data(n_images):
     # Chose path to the folder containing the training data in .jpg format:
     train_data_path = '/home/sexy/CS231n/mat/Kaggle/train-jpg'
-    # Chose path to the folder containing the test data in .jpg format:
-    test_data_path = '/home/sexy/CS231n/mat/Kaggle/test-jpg'
-    # Chose number of images to load
-    n_images = 5000
+    # Chose number of images to load.
+    # Type 'all' to load all the images in the folder, or 'half' to load half of them
 
     print('Loading Train Data: ')
     X_train, X_name_of_each_train = load_jpg_images(train_data_path, n_images)
     X_train = np.array(X_train)
 
+    print('Shape or train images array: ', X_train.shape)
+    return X_train, X_name_of_each_train
+
+def load_X_test_data(n_images):
+    # Chose path to the folder containing the test data in .jpg format:
+    test_data_path = '/home/sexy/CS231n/mat/Kaggle/test-jpg'
+    # Chose number of images to load.
+    # Type 'all' to load all the images in the folder, or 'half' to load half of them
     print('Loading Test Data: ')
     X_test, X_name_of_each_test = load_jpg_images(test_data_path, n_images)
     X_test = np.array(X_test)
 
-    print('Number of train images: ', X_train.shape)
     print('Number of test images: ',  X_test.shape)
-    # print('First position of X_train: ', X_train[0])
-    # print('First position of X_test: ', X_test[0])
+    return X_test, X_name_of_each_test
 
-    return X_train, X_test, X_name_of_each_train, X_name_of_each_test
-
-def load_Y_data():
+def load_Y_data(n_images):
     # Chose path to the .csv file containing the labels: 
     csv_path = '/home/sexy/CS231n/mat/Kaggle/train.csv'
 
-    image_and_tags = csv_reader(csv_path)
+    image_and_tags = csv_reader(csv_path)[:n_images]
     labels = label_lister(image_and_tags)
     Y_train = list_to_vec(image_and_tags['tags'], labels)
     return image_and_tags, labels, Y_train
@@ -63,6 +65,10 @@ def getkey(item):
 
 def load_jpg_images(folder, N):
     _list = os.listdir(folder)
+    if N is 'all':
+        N = int(len(_list))
+    elif N is 'half':
+        N = int(len(_list)/2)
     _list_n = [(int(''.join(list(filter(str.isdigit, x)))), _list[i]) for i, x in enumerate(_list)]
     # print(_list_n[0])
     _list_n = sorted(_list_n, key=getkey)
@@ -70,11 +76,11 @@ def load_jpg_images(folder, N):
     images = []
     filenames = []
     for i, _filename in enumerate(_list_n):
-        if len(images) >= N:
+        if i >= N:
             break
         # print("\n", _filename[1], "testing:)")
         filename = _filename[1]
-        img = np.array(PIL.Image.open(os.path.join(folder, filename)))
+        img = np.array(PIL.Image.open(os.path.join(folder, filename)))/255
         if img is not None:
             images.append(img)
             filenames.append(filename)
@@ -100,13 +106,15 @@ def label_lister(labels_df):
 def list_to_vec(list_img_labels, all_labels):
     number_of_labels = len(all_labels)
     number_of_pics = len(list_img_labels)
-    vec = np.empty([number_of_pics, number_of_labels], dtype=int)
-
+    vec = np.zeros([number_of_pics, number_of_labels], dtype=int)
+    # ['haze', 'primary', 'agriculture', 'clear', 'water', 'habitation', 'road', 'cultivation', 'slash_burn', 'cloudy', 'partly_cloudy',
+    # 'conventional_mine', 'bare_ground', 'artisinal_mine', 'blooming', 'selective_logging', 'blow_down']
     print('Translating lables into vectors:')
     pbar = pb.ProgressBar(widgets=[pb.Percentage(), pb.Bar(), ], max_value=(number_of_pics-1)).start()
-    for i in range(number_of_pics-1):
+    list_img_labels = [labels.split(' ') for labels in list_img_labels]
+    for i in range(number_of_pics):
         pbar.update(i)
-        for j in range(number_of_labels-1):
+        for j in range(number_of_labels):
             if all_labels[j] in list_img_labels[i]:
                 vec[i][j] = 1
             else:
@@ -114,17 +122,18 @@ def list_to_vec(list_img_labels, all_labels):
     pbar.finish()
     return vec
 
+# def vec_to_list(vec, all_labels)
+#     number_of_labels = len(all_labels)
+#     number_of_pics = len(list_img_labels)
+
 # def vec_to_lis():
 
 def train(run=0):
-    X_train, X_test, X_name_of_each_train, X_name_of_each_test = load_X_data()
-    image_and_tags, labels, Y_train = load_Y_data()
-    print('Name of test images: ', X_name_of_each_test)
-    print('Name of train images: ', X_name_of_each_train)
-    print('X_train.shape: ', X_train.shape)
-    print('X_test.shape: ', X_test.shape)
-train()
-'''
+    X_train, X_name_of_each_train = load_X_train_data(5000)
+    # X_test, X_name_of_each_test = load_X_test_data()
+    image_and_tags, labels, Y_train = load_Y_data(X_train.shape[0])
+    # print('number of tags :', np.array(labels).shape)
+# train()
     #datagen = ImageDataGenerator(rotation_range=45,width_shift_range=0.2, height_shift_range=0.2)
     #datagen.fit(X_train)
     model = create_model()
@@ -136,14 +145,15 @@ train()
     #model.fit_generator(datagen.flow(X_train, Y_train, batch_size=32),
     #                samples_per_epoch=len(X_train), nb_epoch=nb_epoch)
     model.fit(X_train, Y_train,
-              batch_size=1024, nb_epoch=nb_epoch,
-              verbose=0,
-              validation_data=(X_test, Y_test),
+              batch_size=2,
+              epochs=nb_epoch,
+              verbose=1,
+            #   validation_data=(X_test, Y_test),
               callbacks=snapshot.get_callbacks('snap-model'+str(run)))
 
     model.load_weights("weights/%s-Best.h5" % ('snap-model'+str(run)))
-    model.compile(loss='categorical_crossentropy', optimizer='adam',
-                  metrics=['categorical_accuracy'])
+    model.compile(loss='mean_squared_error', optimizer='adam',
+                  metrics=['mean_squared_error'])
     score = model.evaluate(X_test, Y_test,
                            verbose=0)
     print('--------------------------------------')
@@ -153,10 +163,10 @@ train()
     return score
 
 def create_model():
-    _input = Input((65536,))
+    _input = Input((256, 256, 4))
     incep1 = inception_net(_input)
     out = incep1
-    model = Model(input=_input, output=[out])
+    model = Model(inputs=_input, outputs=[out])
     return model
 
 def dropconnect_lambda():
@@ -164,66 +174,66 @@ def dropconnect_lambda():
 
 def inception_net(_input):
     #x = Reshape((28, 28, 1))(_input)
-    #x = Convolution2D(32, 3, 3, subsample=(1, 1))(x)
+    #x = Conv2D(32, (3, 3), strides=((1, 1)))(x)
     #x = Activation('relu')(x)
-    x = Convolution2D(16, 3, 3,subsample=(2, 2))(_input)
+    x = Conv2D(16, (3, 3),strides=(2, 2))(_input)
     x = BatchNormalization()(x)
     x = Activation('relu')(x)
-    x = Convolution2D(48, 3, 3,subsample=(1, 1))(x)
+    x = Conv2D(48, (3, 3),strides=((1, 1)))(x)
     x = BatchNormalization()(x)
     x = Activation('relu')(x)
-    #x = MaxPooling2D((3, 3), strides=(2,2))(x)
+    #x = MaxPooling2D(((3, 3)), strides=(2,2))(x)
     x = mniny_inception_module(x, 1)
     x = mniny_inception_module(x, 2)
-    #x = MaxPooling2D((3, 3), strides=(2,2))(x)
+    #x = MaxPooling2D(((3, 3)), strides=(2,2))(x)
     x = mniny_inception_module(x, 2)
     x, soft1 = mniny_inception_module(x, 3, True)
     x = mniny_inception_module(x, 3)
     x = mniny_inception_module(x, 3)
     x, soft2 = mniny_inception_module(x, 4, True)
-    x = MaxPooling2D((3, 3), strides=(2,2))(x)
+    x = MaxPooling2D(((3, 3)), strides=(2,2))(x)
     x = mniny_inception_module(x, 4)
     x = mniny_inception_module(x, 5)
-    x = AveragePooling2D((5, 5), strides=(1, 1))(x)
+    x = AveragePooling2D(((5, 5)), strides=((1, 1)))(x)
     x = Dropout(0.4)(x)
     x = Flatten()(x)
-    x = Dense(10)(x)
-    soft3 = Activation('softmax')(x)
-    out = Average([soft1, soft2, soft3])
+    x = Dense(17)(x)
+    soft3 = Activation('hard_sigmoid')(x)
+    out = Average()([soft1, soft2, soft3])
     return out
 
 def mniny_inception_module(x, scale=1, predict=False):
 
     ###x is input layer, scale is factor to scale kernel sizes by
 
-    x11 = Convolution2D(int(16*scale), 1, 1, border_mode='valid')(x)
+    x11 = Conv2D(int(16*scale), (1, 1), padding='valid')(x)
     x11 = BatchNormalization()(x11)
     x11 = Activation('relu')(x11)
 
-    x33 = Convolution2D(int(24*scale), 1, 1)(x)
+    x33 = Conv2D(int(24*scale), (1, 1))(x)
     x33 = BatchNormalization()(x33)
     x33 = Activation('relu')(x33)
-    x33 = Convolution2D(int(32*scale), 3, 3, border_mode='same')(x33)
+    x33 = Conv2D(int(32*scale), (3, 3), padding='same')(x33)
     x33 = BatchNormalization()(x33)
     x33 = Activation('relu')(x33)
 
-    x55 = Convolution2D(int(4*scale), 1, 1)(x)
+    x55 = Conv2D(int(4*scale), (1, 1))(x)
     x55 = BatchNormalization()(x55)
     x55 = Activation('relu')(x55)
-    x55 = Convolution2D(int(8*scale), 5, 5, border_mode='same')(x55)
+    x55 = Conv2D(int(8*scale), (5, 5), padding='same')(x55)
     x55 = BatchNormalization()(x55)
     x55 = Activation('relu')(x55)
 
-    x33p = MaxPooling2D((3, 3), strides=(1, 1), border_mode='same')(x)
-    x33p = Convolution2D(int(8*scale), 1, 1)(x33p)
+    x33p = MaxPooling2D(((3, 3)), strides=((1, 1)), padding='same')(x)
+    x33p = Conv2D(int(8*scale), (1, 1))(x33p)
     x33p = BatchNormalization()(x33p)
     x33p = Activation('relu')(x33p)
 
     out = Concatenate(axis=3)([x11, x33, x55, x33p])
 
     if predict:
-        predict = AveragePooling2D((5, 5), strides=(1, 1))(x)
-        predict = Convolution2D(int(8*scale), 1, 1)(predict)
+        predict = AveragePooling2D(((5, 5)), strides=((1, 1)))(x)
+        predict = Conv2D(int(8*scale), (1, 1))(predict)
         predict = BatchNormalization()(predict)
         predict = Activation('relu')(predict)
         predict = Dropout(0.3)(predict)
@@ -231,8 +241,8 @@ def mniny_inception_module(x, scale=1, predict=False):
         predict = Dense(120)(predict)
         predict = BatchNormalization()(predict)
         predict = Activation('relu')(predict)
-        predict = Dense(10)(predict)
-        predict = Activation('softmax')(predict)
+        predict = Dense(17)(predict)
+        predict = Activation('hard_sigmoid')(predict)
         return out, predict
 
     return out
@@ -303,6 +313,7 @@ def evaluate(eval_all=False):
     Y_test = np_utils.to_categorical(y_test, 10)
     evaluations = []
 
+
     for i in os.listdir('weights'):
         if '.h5' in i:
             if eval_all:
@@ -329,10 +340,10 @@ def evaluate(eval_all=False):
 
 
 # To train:
-#run = 5
-#while True:
-#    train(run)
-#    run += 1
+run = 0
+while True:
+   train(run)
+   run += 1
 
 
 
@@ -343,4 +354,3 @@ def evaluate(eval_all=False):
 #60000/60000 [==============================] - 33s - loss: 0.0053 - val_loss: 0.0229
 #10000/10000 [==============================] - 8s
 #Test score: 0.0229417834882
-'''
