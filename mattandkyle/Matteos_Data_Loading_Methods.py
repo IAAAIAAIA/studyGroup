@@ -7,6 +7,8 @@ import keras
 import csv
 import os
 import progressbar as pb
+import numpy as np
+import PIL
 
 # In[1]:
 
