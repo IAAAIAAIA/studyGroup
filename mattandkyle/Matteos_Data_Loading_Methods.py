@@ -10,7 +10,10 @@ import cv2
 import progressbar as pb
 import numpy as np
 import PIL
+<<<<<<< HEAD
 import pandas as pd
+=======
+>>>>>>> 7279a094a8311a26d04b1311639f10b6a59740f5
 
 
 # In[10]:
