@@ -10,10 +10,7 @@ import cv2
 import progressbar as pb
 import numpy as np
 import PIL
-<<<<<<< HEAD
 import pandas as pd
-=======
->>>>>>> 7279a094a8311a26d04b1311639f10b6a59740f5
 
 
 # In[10]:
@@ -101,17 +98,16 @@ def list_to_vec(list_img_labels, all_labels):
     vec = np.zeros([number_of_pics, number_of_labels], dtype=int)
     # ['haze', 'primary', 'agriculture', 'clear', 'water', 'habitation', 'road', 'cultivation', 'slash_burn', 'cloudy', 'partly_cloudy',
     # 'conventional_mine', 'bare_ground', 'artisinal_mine', 'blooming', 'selective_logging', 'blow_down']
-    print('Translating lables into vectors:')
-    pbar = pb.ProgressBar(widgets=[pb.Percentage(), pb.Bar(), ], max_value=(number_of_pics-1)).start()
+    #pbar = pb.ProgressBar(widgets=[pb.Percentage(), pb.Bar(), ], max_value=(number_of_pics-1)).start()
     list_img_labels = [labels.split(' ') for labels in list_img_labels]
     for i in range(number_of_pics):
-        pbar.update(i)
+        #pbar.update(i)
         for j in range(number_of_labels):
             if all_labels[j] in list_img_labels[i]:
                 vec[i][j] = 1
             else:
                 vec[i][j] = -1
-    pbar.finish()
+    #pbar.finish()
     return vec
 
 class Data_Generators:
@@ -146,9 +142,7 @@ class Data_Generators:
     def X_train(self):
         file_list = os.listdir(self.X_path)
         _list_n = [(int(''.join(list(filter(str.isdigit, x)))), file_list[i]) for i, x in enumerate(file_list)]
-        # print(_list_n[0])
         _list_n = sorted(_list_n, key=getkey)
-        #pbar = pb.ProgressBar(widgets=[pb.Percentage(), pb.Bar(), ], max_value=N).start() # max_value=len(list)).start()
         iterations = (int)(self.num_train / self.batch_size if self.num_train % self.batch_size is 0
                            else self.num_train / self.batch_size + 1)
         for i in range(iterations - 1):
@@ -221,7 +215,7 @@ class Data_Generators:
         labels = label_lister(image_and_tags)
         Y_train_all = list_to_vec(image_and_tags['tags'], labels)
         Y_train = self.csv_labels_to_numbers(Y_train_all, labels, category)
-        images = np.array(images)
+        Y_train = np.array(Y_train)
         return Y_train
             
    
