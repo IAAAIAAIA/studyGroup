@@ -21,6 +21,7 @@ Code and projects related to our CS224n study group.
 | Date   | Orchestrator | Due                                                                         |
 | ------ | ------------ | --------------------------------------------------------------------------- |
 | Aug 15 | Thomas       |                                                                             |
+| Aug 22 |              |                                                                             |
 | Aug 29 |              |                                                                             |
 | Sep 05 |              |                                                                             |
 | Sep 12 |              |                                                                             |
