@@ -1,5 +1,5 @@
 # CS224n
-Code and projects related to our CS231n study group
+Code and projects related to our CS224n study group.
 
 # Check out these [instructions](https://github.com/IAAAIAAIA/studyGroup/wiki) in the Wiki first.
 
