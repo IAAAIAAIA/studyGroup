@@ -20,8 +20,8 @@ Code and projects related to our CS224n study group.
 # Calendar
 | Date   | Orchestrator | Due                                                                         |
 | ------ | ------------ | --------------------------------------------------------------------------- |
-| Aug 15 | Thomas       |                                                                             |
-| Aug 22 |              |                                                                             |
+| Aug 16 | Thomas       |                                                                             |
+| Aug 23 | Thomas       |                                                                             |
 | Aug 29 |              |                                                                             |
 | Sep 05 |              |                                                                             |
 | Sep 12 |              |                                                                             |
@@ -35,3 +35,4 @@ Code and projects related to our CS224n study group.
 | Nov 07 |              |                                                                             |
 | Nov 14 |              |                                                                             |
 | Nov 28 |              |                                                                             |
+| Dec 11 |              | [Assignment 4](http://web.stanford.edu/class/cs224n/assignment3/index.html) |
