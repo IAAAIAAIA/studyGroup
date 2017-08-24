@@ -27,14 +27,11 @@ def softmax(x):
     x -- You are allowed to modify x in-place
     """
     orig_shape = x.shape
-    x = np.array(x, dtype=np.float128)
     
     if len(x.shape) > 1:
         # Matrix
         ### YOUR CODE HERE
-        # print("XXX", x)
-        # print("ex", np.exp(x))
-        # print("sum", np.sum(np.exp(x), axis=1))
+        x -= np.max(x, axis=1)[:,None]
         ex = np.exp(x)
         x = ex / np.sum(ex, axis=1)[:,None]
         ### END YOUR CODE
@@ -44,8 +41,6 @@ def softmax(x):
         ex = np.exp(x)
         x = ex / np.sum(ex)
         ### END YOUR CODE
-    
-    x = np.array(x, dtype=np.float32)
 
     assert x.shape == orig_shape
     return x
