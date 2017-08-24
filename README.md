@@ -22,17 +22,17 @@ Code and projects related to our CS224n study group.
 | ------ | ------------ | --------------------------------------------------------------------------- |
 | Aug 16 | Thomas       |                                                                             |
 | Aug 23 | Thomas       |                                                                             |
-| Aug 29 |              |                                                                             |
-| Sep 05 |              |                                                                             |
-| Sep 12 |              |                                                                             |
-| Sep 19 |              | [Assignment 1](http://web.stanford.edu/class/cs224n/assignment1/index.html) |
-| Sep 26 |              |                                                                             |
-| Oct 03 |              |                                                                             |
-| Oct 10 |              | [Assignment 2](http://web.stanford.edu/class/cs224n/assignment2/index.html) |
-| Oct 17 |              |                                                                             |
-| Oct 24 |              |                                                                             |
-| Oct 31 |              | [Assignment 3](http://web.stanford.edu/class/cs224n/assignment3/index.html) |                                                                             
-| Nov 07 |              |                                                                             |
-| Nov 14 |              |                                                                             |
-| Nov 28 |              |                                                                             |
-| Dec 11 |              | [Assignment 4](http://web.stanford.edu/class/cs224n/assignment3/index.html) |
+| Aug 29 | Kyle         |                                                                             |
+| Sep 05 | Alec         |                                                                             |
+| Sep 12 | John         |                                                                             |
+| Sep 19 | Matteo       | [Assignment 1](http://web.stanford.edu/class/cs224n/assignment1/index.html) |
+| Sep 26 | Mathew       |                                                                             |
+| Oct 03 | Steffen      |                                                                             |
+| Oct 10 | Alec         | [Assignment 2](http://web.stanford.edu/class/cs224n/assignment2/index.html) |
+| Oct 17 | Thomas       |                                                                             |
+| Oct 24 | John         |                                                                             |
+| Oct 31 | Matteo       | [Assignment 3](http://web.stanford.edu/class/cs224n/assignment3/index.html) |                                                                             
+| Nov 07 | Mathew       |                                                                             |
+| Nov 14 | Kyle         |                                                                             |
+| Nov 28 | Steffen      |                                                                             |
+| Dec 11 | Thomas       | [Assignment 4](http://web.stanford.edu/class/cs224n/assignment3/index.html) |
