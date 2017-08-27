@@ -41,8 +41,8 @@ Code and projects related to our CS224n study group.
 | Aug 16 | Thomas       |                                                                             |
 | Aug 23 | Thomas       |                                                                             |
 | Aug 28 | Kyle         |                                                                             |
-| Sep 06 | Alec         | (This is a Wednesday.)                                                      |
-| Sep 11 | John         |                                                                             |
+| Sep 06 | John         | (This is a Wednesday.)                                                      |
+| Sep 11 | Alec         |                                                                             |
 | Sep 18 | Matteo       | [Assignment 1](http://web.stanford.edu/class/cs224n/assignment1/index.html) |
 | Sep 25 | Mathew       |                                                                             |
 | Oct 02 | Steffen      |                                                                             |
