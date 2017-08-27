@@ -1,7 +1,28 @@
 # CS224n
 Code and projects related to our CS224n study group.
 
-# Check out these [instructions](https://github.com/IAAAIAAIA/studyGroup/wiki) in the Wiki first.
+# Monday, August 28th
+### Kyle’s Plans
+- What are we going over?
+
+### Preparation
+- What should we do to prepare?
+
+<details>
+<summary>Post-meeting</summary>
+<p>
+
+### Homework/Participation
+- [1pt] You have three points per person to allocate.
+- [1pt] You can split them up however you want between homework and participation.
+- [1pt] Try to make objective tasks and remember that lotteries are meant to tax the poor.
+- Due: Month 0th @ 0pm
+
+### Summary
+- What did we go over?
+- What notable events occurred? What do you think worked? What didn’t work?
+</p>
+</details>
 
 # Important Links
 
@@ -9,7 +30,7 @@ Code and projects related to our CS224n study group.
 - [CS224n Webpage](http://web.stanford.edu/class/cs224n/) - Course syllabus, lecture videos, calendar, assignments, etc.
 - [CS224n Playlist](https://www.youtube.com/playlist?list=PL3FW7Lu3i5Jsnh1rnUwq_TcylNr7EkRe6) - Video playlist of Stanford’s natural language processing (NLP) course from Winter 2017
 - [IAAAIAAIA Slack](https://iaaaiaaia.slack.com/) - The cs224n channel (one of many) is the important one! If you need an invite, let someone know.
-- [Study Group Wiki](https://github.com/IAAAIAAIA/studyGroup/wiki) - Contains **Meeting Summary** (current homework assignments, meeting summaries, future plans), **Syllabus** (meeting rules, orchestration guidelines, and point breakdown), and **Points**.
+- [Study Group Wiki](https://github.com/IAAAIAAIA/studyGroup/wiki) - Contains **Meeting Summary** (current homework assignments, meeting summaries, future plans), **Syllabus** (meeting rules, orchestration guidelines, and point breakdown), **Instructions** (initial setup instructions), and **Points**.
 
 #### Resources
 - [NumPy Video Tutorial](https://www.youtube.com/watch?v=1zmV8lZsHF4) - Best viewed at 1.5x speed.
