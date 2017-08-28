@@ -3,20 +3,19 @@ Code and projects related to our CS224n study group.
 
 # Monday, August 28th
 ### Kyle’s Plans
-- What are we going over?
+- We are going to be talking more about word vectors, how to train them, and how to evaluate them.
 
 ### Preparation
-- What should we do to prepare?
+- Have watched lectures 2 and 3
 
 <details>
 <summary>Post-meeting</summary>
 <p>
 
 ### Homework/Participation
-- [1pt] You have three points per person to allocate.
-- [1pt] You can split them up however you want between homework and participation.
-- [1pt] Try to make objective tasks and remember that lotteries are meant to tax the poor.
-- Due: Month 0th @ 0pm
+- [1pt] Attendance 
+- [2pt] Adjust some hyperparameters for the word vectors implementation in assignment 1 and create a graph.
+- Due: September 11th @ 8pm
 
 ### Summary
 - What did we go over?
