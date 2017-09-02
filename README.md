@@ -1,21 +1,22 @@
 # CS224n
 Code and projects related to our CS224n study group.
 
-# Monday, August 28th
-### Kyle’s Plans
-- We are going to be talking more about word vectors, how to train them, and how to evaluate them.
+# Wednesday, September 6th
+### John’s Plans
+- What are we going over?
 
 ### Preparation
-- Have watched lectures 2 and 3
+- What should we do to prepare?
 
 <details>
 <summary>Post-meeting</summary>
 <p>
 
 ### Homework/Participation
-- [1pt] Attendance 
-- [2pt] Adjust some hyperparameters for the word vectors implementation in assignment 1 and create a graph.
-- Due: September 11th @ 8pm
+- [1pt] You have three points per person to allocate.
+- [1pt] You can split them up however you want between homework and participation.
+- [1pt] Try to make objective tasks and remember that lotteries are meant to tax the poor.
+- Due: Month 0th @ 0pm
 
 ### Summary
 - What did we go over?
@@ -35,21 +36,21 @@ Code and projects related to our CS224n study group.
 - [NumPy Video Tutorial](https://www.youtube.com/watch?v=1zmV8lZsHF4) - Best viewed at 1.5x speed.
 
 # Calendar
-| Date   | Orchestrator | Due                                                                         |
-| ------ | ------------ | --------------------------------------------------------------------------- |
-| Aug 16 | Thomas       |                                                                             |
-| Aug 23 | Thomas       |                                                                             |
-| Aug 28 | Kyle         |                                                                             |
-| Sep 06 | John         | (This is a Wednesday.)                                                      |
-| Sep 11 | Alec         |                                                                             |
-| Sep 18 | Matteo       | [Assignment 1](http://web.stanford.edu/class/cs224n/assignment1/index.html) |
-| Sep 25 | Mathew       |                                                                             |
-| Oct 02 | Steffen      |                                                                             |
-| Oct 09 | Alec         | [Assignment 2](http://web.stanford.edu/class/cs224n/assignment2/index.html) |
-| Oct 16 | Thomas       |                                                                             |
-| Oct 23 | John         |                                                                             |
-| Oct 30 | Matteo       | [Assignment 3](http://web.stanford.edu/class/cs224n/assignment3/index.html) |
-| Nov 06 | Mathew       |                                                                             |
-| Nov 13 | Kyle         |                                                                             |
-| Nov 27 | Steffen      |                                                                             |
-| Dec 11 | Thomas       | [Assignment 4](http://web.stanford.edu/class/cs224n/assignment3/index.html) |
+| Date   | Orchestrator | Due                                                                                           |
+| ------ | ------------ | --------------------------------------------------------------------------------------------- |
+| Aug 16 | Thomas       |                                                                                               |
+| Aug 23 | Thomas       |                                                                                               |
+| Aug 28 | Kyle         |                                                                                               |
+| Sep 06 | John         | (This is a Wednesday.)                                                                        |
+| Sep 11 | Alec         |                                                                                               |
+| Sep 18 | Matteo       | [Assignment 1](http://web.stanford.edu/class/cs224n/assignment1/index.html), Thomas' Homework |
+| Sep 25 | Mathew       | Kyle's Homework                                                                               |
+| Oct 02 | Steffen      |                                                                                               |
+| Oct 09 | Alec         | [Assignment 2](http://web.stanford.edu/class/cs224n/assignment2/index.html)                   |
+| Oct 16 | Thomas       |                                                                                               |
+| Oct 23 | John         |                                                                                               |
+| Oct 30 | Matteo       | [Assignment 3](http://web.stanford.edu/class/cs224n/assignment3/index.html)                   |
+| Nov 06 | Mathew       |                                                                                               |
+| Nov 13 | Kyle         |                                                                                               |
+| Nov 27 | Steffen      |                                                                                               |
+| Dec 11 | Thomas       | [Assignment 4](http://web.stanford.edu/class/cs224n/assignment3/index.html)                   |
