@@ -3,10 +3,12 @@ Code and projects related to our CS224n study group.
 
 # Wednesday, September 6th
 ### John’s Plans
-- What are we going over?
+- Covering Lecture 4
+ 
 
 ### Preparation
-- What should we do to prepare?
+- Watch Lecture 4 
+(Lecture 5 optional)
 
 <details>
 <summary>Post-meeting</summary>
