@@ -26,8 +26,10 @@ def forward_backward_prop(data, labels, params, dimensions):
     ### Unpack network parameters (do not modify)
     ofs = 0
     Dx, H, Dy = (dimensions[0], dimensions[1], dimensions[2])
-
-    W1 = np.reshape(params[ofs:ofs+ Dx * H], (Dx, H))
+    # print(params)
+    # print(params[ofs:ofs + Dx * H])
+    # print((Dx, H))
+    W1 = np.reshape(params[ofs:ofs + Dx * H], (Dx, H))
     ofs += Dx * H
     b1 = np.reshape(params[ofs:ofs + H], (1, H))
     ofs += H
@@ -36,11 +38,25 @@ def forward_backward_prop(data, labels, params, dimensions):
     b2 = np.reshape(params[ofs:ofs + Dy], (1, Dy))
 
     ### YOUR CODE HERE: forward propagation
-    pass
+    h = sigmoid(np.dot(data, W1) + b1)
+    yHat = softmax(np.dot(h, W2) + b2)
+    cost = -np.sum(np.multiply(labels, np.log(yHat)))
+    # print("cost", cost)
     ### END YOUR CODE
 
     ### YOUR CODE HERE: backward propagation
-    raise NotImplementedError
+    d1 = np.subtract(yHat, labels)
+    d2 = np.dot(d1, W2.T)
+    d3 = np.multiply(d2, sigmoid_grad(h))
+    gradW2 = np.dot(h.T, d1)
+    gradb2 = np.dot(np.ones((1, d1.shape[0])), d1)
+    gradW1 = np.dot(data.T, d3)
+    gradb1 = np.dot(np.ones((1, d3.shape[0])), d3)
+    # print("gradW2", gradW2.flatten()[0])
+    # print("gradb2", gradb2.flatten()[0])
+    # print("gradW1", gradW1.flatten()[0])
+    # print("gradb1", gradb1.flatten()[0])
+    # print('\n')
     ### END YOUR CODE
 
     ### Stack gradients (do not modify)
@@ -64,8 +80,7 @@ def sanity_check():
     for i in range(N):
         labels[i, random.randint(0,dimensions[2]-1)] = 1
 
-    params = np.random.randn((dimensions[0] + 1) * dimensions[1] + (
-        dimensions[1] + 1) * dimensions[2], )
+    params = np.random.randn((dimensions[0] + 1) * dimensions[1] + (dimensions[1] + 1) * dimensions[2], )
 
     gradcheck_naive(lambda params:
         forward_backward_prop(data, labels, params, dimensions), params)
@@ -80,7 +95,7 @@ def your_sanity_checks():
     """
     print("Running your sanity checks...")
     ### YOUR CODE HERE
-    raise NotImplementedError
+    pass
     ### END YOUR CODE
 
 

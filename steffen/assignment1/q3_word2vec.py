@@ -15,7 +15,9 @@ def normalizeRows(x):
     """
 
     ### YOUR CODE HERE
-    raise NotImplementedError
+    l2 = np.atleast_1d(np.linalg.norm(x, ord=2, axis=1, keepdims=True))
+    l2[l2==0] = 1
+    x = x / l2
     ### END YOUR CODE
 
     return x
@@ -27,7 +29,7 @@ def test_normalize_rows():
     print(x)
     ans = np.array([[0.6,0.8],[0.4472136,0.89442719]])
     assert np.allclose(x, ans, rtol=1e-05, atol=1e-06)
-    print("")
+    print("Success")
 
 
 def softmaxCostAndGradient(predicted, target, outputVectors, dataset):
@@ -58,7 +60,9 @@ def softmaxCostAndGradient(predicted, target, outputVectors, dataset):
     """
 
     ### YOUR CODE HERE
-    raise NotImplementedError
+    cost = -np.sum(np.multiply(target, np.log(predicted)))
+    gradPred = predicted[target==1] - 1
+    grad = predicted[target!=1]
     ### END YOUR CODE
 
     return cost, gradPred, grad
@@ -96,7 +100,7 @@ def negSamplingCostAndGradient(predicted, target, outputVectors, dataset,
     indices.extend(getNegativeSamples(target, dataset, K))
 
     ### YOUR CODE HERE
-    raise NotImplementedError
+    
     ### END YOUR CODE
 
     return cost, gradPred, grad
@@ -171,8 +175,8 @@ def word2vec_sgd_wrapper(word2vecModel, tokens, wordVectors, dataset, C,
     cost = 0.0
     grad = np.zeros(wordVectors.shape)
     N = wordVectors.shape[0]
-    inputVectors = wordVectors[:N/2,:]
-    outputVectors = wordVectors[N/2:,:]
+    inputVectors = wordVectors[:N//2,:]
+    outputVectors = wordVectors[N//2:,:]
     for i in range(batchsize):
         C1 = random.randint(1,C)
         centerword, context = dataset.getRandomContext(C1)
