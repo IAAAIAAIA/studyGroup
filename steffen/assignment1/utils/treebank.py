@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import cPickle as pickle
+import _pickle as pickle
 import numpy as np
 import os
 import random
