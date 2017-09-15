@@ -1,7 +1,8 @@
 
 import numpy as np
+import os
 
-DEFAULT_FILE_PATH = "utils/datasets/glove.6B.50d.txt"
+DEFAULT_FILE_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), "datasets", "glove.6B.50d.txt")
 
 def loadWordVectors(tokens, filepath=DEFAULT_FILE_PATH, dimensions=50):
     """Read pretrained GloVe vectors"""

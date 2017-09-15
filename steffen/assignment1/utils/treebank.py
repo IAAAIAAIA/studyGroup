@@ -9,7 +9,7 @@ import random
 class StanfordSentiment:
     def __init__(self, path=None, tablesize = 1000000):
         if not path:
-            path = "utils/datasets/stanfordSentimentTreebank"
+            path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "datasets", "stanfordSentimentTreebank")
 
         self.path = path
         self.tablesize = tablesize
@@ -51,7 +51,7 @@ class StanfordSentiment:
             return self._sentences
 
         sentences = []
-        with open(self.path + "/datasetSentences.txt", "r") as f:
+        with open(os.path.join(self.path, "datasetSentences.txt"), "r") as f:
             first = True
             for line in f:
                 if first:
@@ -60,7 +60,7 @@ class StanfordSentiment:
 
                 splitted = line.strip().split()[1:]
                 # Deal with some peculiar encoding issues with this file
-                sentences += [[w.lower().decode("utf-8").encode('latin1') for w in splitted]]
+                sentences += [[w.lower() for w in splitted]] #.decode("utf-8").encode('latin1')
 
         self._sentences = sentences
         self._sentlengths = np.array([len(s) for s in sentences])
