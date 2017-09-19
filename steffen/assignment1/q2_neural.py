@@ -2,11 +2,35 @@
 
 import numpy as np
 import random
+import os
 
 from q1_softmax import softmax
 from q2_sigmoid import sigmoid, sigmoid_grad
 from q2_gradcheck import gradcheck_naive
 
+from q3_sgd import sgd
+
+import matplotlib.pyplot as plt
+
+def forward_test(data, labels, params, dimensions):
+    ofs = 0
+    Dx, H, Dy = (dimensions[0], dimensions[1], dimensions[2])
+    # print(params)
+    # print(params[ofs:ofs + Dx * H])
+    # print((Dx, H))
+    W1 = np.reshape(params[ofs:ofs + Dx * H], (Dx, H))
+    ofs += Dx * H
+    b1 = np.reshape(params[ofs:ofs + H], (1, H))
+    ofs += H
+    W2 = np.reshape(params[ofs:ofs + H * Dy], (H, Dy))
+    ofs += H * Dy
+    b2 = np.reshape(params[ofs:ofs + Dy], (1, Dy))
+
+    ### YOUR CODE HERE: forward propagation
+    h = sigmoid(np.dot(data, W1) + b1)
+    yHat = softmax(np.dot(h, W2) + b2)
+    cost = np.count_nonzero(np.argmax(yHat, axis=1) - np.argmax(labels, axis=1))
+    return cost
 
 def forward_backward_prop(data, labels, params, dimensions):
     """
@@ -52,11 +76,7 @@ def forward_backward_prop(data, labels, params, dimensions):
     gradb2 = np.dot(np.ones((1, d1.shape[0])), d1)
     gradW1 = np.dot(data.T, d3)
     gradb1 = np.dot(np.ones((1, d3.shape[0])), d3)
-    # print("gradW2", gradW2.flatten()[0])
-    # print("gradb2", gradb2.flatten()[0])
-    # print("gradW1", gradW1.flatten()[0])
-    # print("gradb1", gradb1.flatten()[0])
-    # print('\n')
+    
     ### END YOUR CODE
 
     ### Stack gradients (do not modify)
@@ -65,6 +85,33 @@ def forward_backward_prop(data, labels, params, dimensions):
 
     return cost, grad
 
+def dynamicNN(data, labels, params, dimensions):
+    ofs = 0
+    Dx = dimensions[0]
+    Dy = dimensions[len(dimensions)-1]
+    Weights = []
+    biases = []
+    for i in range(len(dimensions)-1):
+        dim = dimensions[i]
+        dim1 = dimensions[i+1]
+        Weights.append(np.reshape(params[ofs:ofs + dim * dim1], (dim, dim1)))
+        ofs += dim * dim1
+        biases.append(np.reshape(params[ofs:ofs + dim1], (1, dim1)))
+        ofs += dim1
+    
+    # forwardprop
+    hiddenLayers = []
+    lastSigmoid = len(dimensions)-2
+    for i in range(lastSigmoid):
+        hiddenLayers.append(sigmoid(np.dot(data, Weights[i]) + biases[i]))
+    prediction = softmax(np.dot(hiddenLayers[lastSigmoid], Weights[lastSigmoid]) + biases[lastSigmoid])
+
+    cost = -np.sum(np.multiply(labels, np.log(prediction)))
+
+    # backprop
+    
+
+    return cost, grad
 
 def sanity_check():
     """
@@ -95,7 +142,57 @@ def your_sanity_checks():
     """
     print("Running your sanity checks...")
     ### YOUR CODE HERE
-    pass
+    PATH = os.getcwd()
+    trainFile = os.path.join(PATH, "optdigits_train.txt")
+    testFile = os.path.join(PATH, "optdigits_test.txt")
+
+    with open(trainFile, 'r') as train_data:
+        data = [line.split(',') for line in train_data.readlines()]
+        for i in range(len(data)):
+            for j in range(len(data[i])):
+                data[i][j] = int(data[i][j])
+        trainX = np.asarray(data)[:, :-1]
+        indexY = np.transpose(np.asarray(data)[:, -1:])[0]
+        shp = np.arange(indexY.shape[0])
+        trainY = np.zeros((trainX.shape[0], 10))
+        trainY[shp, indexY] = 1
+        # print(trainY)
+
+    with open(testFile, 'r') as test_data:
+        data = [line.split(',') for line in test_data.readlines()]
+        for i in range(len(data)):
+            for j in range(len(data[i])):
+                data[i][j] = int(data[i][j])
+        testX = np.asarray(data)[:,:-1]
+        indexY = np.transpose(np.asarray(data)[:, -1:])[0]
+        shp = np.arange(indexY.shape[0])
+        testY = np.zeros((testX.shape[0], 10))
+        testY[shp, indexY] = 1
+    
+    dimensions = [64, 128, 10]
+
+    siz = sum((dimensions[i] + 1) * dimensions[i+1] for i in range(len(dimensions)-1))
+    params = np.random.randn(siz)
+
+    trainChart = []
+    testChart = []
+    rate = 0.001
+    for tenEpoc in range(500):
+        sgd(forward_backward_prop, [trainX, trainY, params, dimensions], rate, 10, PRINT_EVERY=100)
+        trainChart.append(forward_test(trainX, trainY, params, dimensions))
+        testChart.append(forward_test(testX, testY, params, dimensions))
+        print("Train iter\t", 10*tenEpoc, "\t:", trainChart[tenEpoc])
+        print("Test iter\t", 10*tenEpoc, "\t:", testChart[tenEpoc])
+        if testChart[tenEpoc] < 130:
+            rate = 0.0001
+
+    fig = plt.figure()
+
+    plt.xlabel('epoch')
+    plt.ylabel('loss')
+    plt.plot(np.arange(len(trainChart)), trainChart, np.arange(len(testChart)), testChart)
+    plt.legend(['train', 'test'], loc='upper right')
+    plt.show()
     ### END YOUR CODE
 
 

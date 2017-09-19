@@ -1,5 +1,5 @@
 import numpy as np
-
+from q2_gradcheck import gradcheck_naive
 
 def softmax(x):
     """Compute the softmax function for each row of the input x.
@@ -45,6 +45,8 @@ def softmax(x):
     assert x.shape == orig_shape
     return x
 
+def softmaxCombo(x):
+    return np.sum(softmax(x)), softmax(x)*(1-softmax(x))
 
 def test_softmax_basic():
     """
@@ -86,7 +88,11 @@ def test_softmax():
     ans4 = np.array([
         [0.26894142, 0.73105858],
         [0.73105858, 0.26894142]])
-    assert np.allclose(test4, ans4, rtol=1e-05, atol=1e-06)    ### END YOUR CODE
+    assert np.allclose(test4, ans4, rtol=1e-05, atol=1e-06)
+
+    test5 = np.array([[1,2], [3,4]])
+    gradcheck_naive(softmaxCombo, test5)
+    ### END YOUR CODE
 
 
 if __name__ == "__main__":
