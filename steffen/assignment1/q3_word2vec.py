@@ -100,7 +100,7 @@ def negSamplingCostAndGradient(predicted, target, outputVectors, dataset,
     indices.extend(getNegativeSamples(target, dataset, K))
 
     ### YOUR CODE HERE
-    
+    pass
     ### END YOUR CODE
 
     return cost, gradPred, grad
