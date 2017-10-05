@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import numpy as np
-
+from q2_gradcheck import gradcheck_naive
 
 def sigmoid(x):
     """
@@ -85,6 +85,12 @@ def test_sigmoid():
         [0.19661193, 0.10499359],
         [0.19661193, 0.10499359]])
     assert np.allclose(g, g_ans, rtol=1e-05, atol=1e-06)
+
+    def ff(x):
+        f = sigmoid(x)
+        return np.sum(f), sigmoid_grad(f)
+    
+    gradcheck_naive(ff, x)
     ### END YOUR CODE
 
 
