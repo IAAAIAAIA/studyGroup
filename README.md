@@ -1,14 +1,13 @@
 # CS224n
 Code and projects related to our CS224n study group.
 
-# Wednesday, September 6th
-### John’s Plans
-- Covering Lecture 4
- 
+# Monday, October 16th
+### Thomas' Plans
+- We'll be going over a Deep Q-Network tutorial line by line
 
 ### Preparation
-- Watch Lecture 4 
-(Lecture 5 optional)
+- Go through this [tutorial](http://pytorch.org/tutorials/intermediate/reinforcement_q_learning.html) and make sure you can run the code **BEFORE** the meeting.
+- It will be helpful to, at the least, skim through the code (especially the optimize_model function) and try to understand what it means.
 
 <details>
 <summary>Post-meeting</summary>
