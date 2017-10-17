@@ -10,12 +10,36 @@ import torch
 import torch.nn as nn
 from torch.autograd import Variable
 
+import argparse
+
+parser = argparse.ArgumentParser(description='Process some integers.')
+parser.add_argument('-s', '--save_path', help='Relative file location to the save path')
+parser.add_argument('-l', '--load_path', help='Relative file location to the load path')
+parser.add_argument('-d', '--data_path', help='Relative directory location to the data set with the input.txt file')
+
+args = parser.parse_args()
+
 PATH = os.path.dirname(os.path.realpath(__file__))
+SAVE_PATH = None
+LOAD_PATH = None
+DATA_PATH = None
+if args.save_path:
+    SAVE_PATH = os.path.join(PATH, args.save_path)
+    print("LOAD_PATH", SAVE_PATH)
+if args.load_path:
+    LOAD_PATH = os.path.join(PATH, args.load_path)
+    print("LOAD_PATH", LOAD_PATH)
+if args.data_path:
+    DATA_PATH = os.path.join(PATH, args.data_path)
+    print("DATA_PATH", DATA_PATH)
 
 all_characters = string.printable
 n_characters = len(all_characters)
 
-file = unidecode.unidecode(open(os.path.join(PATH, "data", "reinfocementTextbook", "input.txt")).read())
+if DATA_PATH:
+    file = unidecode.unidecode(open(os.path.join(PATH, DATA_PATH, "input.txt")).read())    
+else:
+    file = unidecode.unidecode(open(os.path.join(PATH, "data", "reinfocementTextbook", "input.txt")).read())
 file_len = len(file)
 # print('file_len =', file_len)
 
@@ -26,7 +50,7 @@ def random_chunk():
     end_index = start_index + chunk_len + 1
     return file[start_index:end_index]
 
-print(random_chunk())
+# print(random_chunk())
 
 
 class RNN(nn.Module):
@@ -48,7 +72,7 @@ class RNN(nn.Module):
         return output, hidden
 
     def init_hidden(self):
-        return Variable(torch.zeros(self.n_layers, 1, self.hidden_size))
+        return Variable(torch.zeros(self.n_layers, 1, self.hidden_size)).type(torch.cuda.FloatTensor)
 
 
 # Turn string into list of longs
@@ -57,7 +81,7 @@ def char_tensor(string):
     for c in range(len(string)):
         if string[c] in all_characters:
             tensor[c] = all_characters.index(string[c])
-    return Variable(tensor)
+    return Variable(tensor).type(torch.cuda.LongTensor)
 
 # print(char_tensor('abcDEF'))
 
@@ -122,13 +146,17 @@ lr = 0.005
 decoder = RNN(n_characters, hidden_size, n_characters, n_layers)
 decoder_optimizer = torch.optim.Adam(decoder.parameters(), lr=lr)
 criterion = nn.CrossEntropyLoss()
+decoder.cuda()
 
 start = time.time()
 all_losses = []
 loss_avg = 0
 
+if LOAD_PATH != None:
+    decoder.load_state_dict(torch.load(LOAD_PATH))
+
 for epoch in range(1, n_epochs + 1):
-    loss = train(*random_training_set())       
+    loss = train(*random_training_set())
     loss_avg += loss
 
     if epoch % print_every == 0:
@@ -138,3 +166,6 @@ for epoch in range(1, n_epochs + 1):
     if epoch % plot_every == 0:
         all_losses.append(loss_avg / plot_every)
         loss_avg = 0
+
+if SAVE_PATH != None:
+    torch.save(decoder.state_dict(), SAVE_PATH)
