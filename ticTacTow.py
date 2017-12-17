@@ -11,6 +11,21 @@ class board(object):
         self.playerPieces = ["X", "O"]
         self.boards = np.zeros((self.boardWidth, self.boardHeight, self.players))
         self.defineWinFilters()
+
+    def Reset(self):
+        self.boards = np.zeros((self.boardWidth, self.boardHeight, self.players))
+
+    def GetBoard(self):
+        collapsedBoard = np.zeros((self.boardWidth, self.boardHeight))
+        for player in range(self.players):
+            collapsedBoard = collapsedBoard + (player+1) * self.boards[:,:,player]
+        return collapsedBoard
+
+    def TakeTurn(self, location):
+        if self.turn == None:
+            self.turn = 0
+        self.Play(self.turn, location)
+        self.turn = (self.turn + 1) % len(self.playerPieces)
     
     def Play(self, player, location):
         if type(location) != tuple:
@@ -73,7 +88,7 @@ class board(object):
                 else:
                     print()
             if i != self.boardWidth-1:
-                print("---------")
+                print("-" * (4 * self.boardWidth - 3))
 
 def main():
     game = board()
@@ -83,10 +98,11 @@ def main():
     game.Play("O", (1,0))
     game.Play("O", (2,0))
     game.Play("O", (2,2))
-    game.Play("O", (2,1))
+    game.Play("X", (2,1))
     result = game.CheckWin()
     print("winner:", result)
     game.Print()
+    print(game.GetBoard())
 
 if __name__ == '__main__':
     main()
