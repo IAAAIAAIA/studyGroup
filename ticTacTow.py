@@ -15,10 +15,52 @@ class board(object):
     def Reset(self):
         self.boards = np.zeros((self.boardWidth, self.boardHeight, self.players))
 
-    def GetBoard(self):
+    def GetValidMoves(self):
+        valids = []
+        for i in range(self.boardWidth):
+            for j in range(self.boardHeight):
+                if all(self.boards[i,j,:] == 0):
+                    valids.append((i,j))
+        return valids
+
+    def GetReward(self):
+        """ Returns the current reward at the current board
+            and if the game has ended or not
+        """
+        check = self.CheckWin()
+        if check == False:
+            if len(self.GetValidMoves()) == 0:
+                return 0, True
+            else:
+                return 0, False
+        if check == self.playerPieces[0]:
+            return 2, True
+        else:
+            return -1, True
+
+    def GetBoard(self, swapPlayer=1):
+        """ Returns the board in a numpy array
+            0 = empty
+            1 = player 1
+            2 = player 2 
+            etc.
+
+            swapPlayer argument is what player 1 should swap to i.e.
+            swapPlayer = 2 means that players 1 and 2 swap
+            swapPlayer = 3 means that players 1 and 3 swap
+            default = 1
+            swapPlayer cannot be <= 0
+        """
+        if swapPlayer <= 0:
+            swapPlayer = 1
         collapsedBoard = np.zeros((self.boardWidth, self.boardHeight))
         for player in range(self.players):
-            collapsedBoard = collapsedBoard + (player+1) * self.boards[:,:,player]
+            if player == 0:
+                collapsedBoard = collapsedBoard + (swapPlayer) * self.boards[:,:,player]
+            elif (swapPlayer-1) == player:
+                collapsedBoard = collapsedBoard + (1) * self.boards[:,:,player]
+            else:
+                collapsedBoard = collapsedBoard + (player+1) * self.boards[:,:,player]
         return collapsedBoard
 
     def TakeTurn(self, location):

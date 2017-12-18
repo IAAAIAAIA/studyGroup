@@ -26,3 +26,5 @@ class ReplayMemory(object):
     def __len__(self):
         return len(self.memory)
 
+# to get the state use GetBoard() from the game
+# actions are represented as tuples for the location
