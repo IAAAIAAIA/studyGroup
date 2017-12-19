@@ -16,11 +16,11 @@ class board(object):
         self.boards = np.zeros((self.boardWidth, self.boardHeight, self.players))
 
     def GetValidMoves(self):
-        valids = []
+        valids = np.zeros((3,3), dtype=bool)
         for i in range(self.boardWidth):
             for j in range(self.boardHeight):
                 if all(self.boards[i,j,:] == 0):
-                    valids.append((i,j))
+                    valids[i,j] = True
         return valids
 
     def GetReward(self):
@@ -63,11 +63,15 @@ class board(object):
                 collapsedBoard = collapsedBoard + (player+1) * self.boards[:,:,player]
         return collapsedBoard
 
+    def GetBoardRaw(self):
+        return self.boards
+
     def TakeTurn(self, location):
         if self.turn == None:
             self.turn = 0
         self.Play(self.turn, location)
         self.turn = (self.turn + 1) % len(self.playerPieces)
+        return self.turn
     
     def Play(self, player, location):
         if type(location) != tuple:
