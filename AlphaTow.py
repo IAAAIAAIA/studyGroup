@@ -84,6 +84,7 @@ def train():
             # record to the Replay memory
             episodeMemory.append(Transition(currentState, actionLable, currentReward))
             sumReward += currentReward
+        game.Print()
         for i, mem in enumerate(episodeMemory):
             memory.push(mem.state, mem.action, sumReward)
         # train
@@ -99,10 +100,18 @@ def play():
         predict = alpha.model.predict(game.GetBoard(), batch_size=1)
         game.TakeTurn(np.unravel_index(np.argmax(predict), (3,3)))
         game.Print()
-        if game.CheckWin():
-            
+        win = game.CheckWin()
+        if win != False:
+            print("Winner:", win)
+            return
         action = input("player input (1-9, left to right, top to bottom):")
         game.TakeTurn(action)
+        game.Print()
+        win = game.CheckWin()
+        if win != False:
+            print("Winner:", win)
+            return
 
 if __name__ == '__main__':
-    train()
+    # train()
+    play()
